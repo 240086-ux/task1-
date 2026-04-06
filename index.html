@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send data to Firebase</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        input, button { margin: 5px; padding: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h2>Contact Form</h2>
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Your name" required><br>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="message"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // REPLACE WITH YOUR OWN firebaseConfig FROM FIREBASE CONSOLE
+        const firebaseConfig = {
+            apiKey: "AIzaSyA...",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const form = document.getElementById('contactForm');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            try {
+                const docRef = await addDoc(collection(db, "requests"), {
+                    name: name,
+                    email: email,
+                    timestamp: new Date()
+                });
+                messageDiv.textContent = `Success! Document ID: ${docRef.id}`;
+                messageDiv.className = 'success';
+                form.reset();
+            } catch (error) {
+                console.error("Error:", error);
+                messageDiv.textContent = `Error: ${error.message}`;
+                messageDiv.className = 'error';
+            }
+        });
+    </script>
+</body>
+</html>
