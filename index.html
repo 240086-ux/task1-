@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send data to Firebase</title>
+    <title>Отправка данных в Firebase</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         input, button { margin: 5px; padding: 8px; }
@@ -12,19 +12,20 @@
     </style>
 </head>
 <body>
-    <h2>Contact Form</h2>
+    <h2>Форма обратной связи</h2>
     <form id="contactForm">
-        <input type="text" id="name" placeholder="Your name" required><br>
+        <input type="text" id="name" placeholder="Ваше имя" required><br>
         <input type="email" id="email" placeholder="Email" required><br>
-        <button type="submit">Submit</button>
+        <button type="submit">Отправить</button>
     </form>
     <div id="message"></div>
 
+    <!-- Импорт модулей Firebase (SDK версии 9+) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // REPLACE WITH YOUR OWN firebaseConfig FROM FIREBASE CONSOLE
+        // ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА СВОИ ИЗ КОНСОЛИ FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyAe3Gc_hZNYcZSlngZJUX6-eddLkYze7Q4",
   authDomain: "task11-5a364.firebaseapp.com",
@@ -35,9 +36,11 @@ const firebaseConfig = {
   measurementId: "G-SH3LWGRZJY"
 };
 
+        // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Обработка отправки формы
         const form = document.getElementById('contactForm');
         const messageDiv = document.getElementById('message');
 
@@ -48,17 +51,18 @@ const firebaseConfig = {
             const email = document.getElementById('email').value;
 
             try {
+                // Добавление документа в коллекцию "requests" (как в методичке)
                 const docRef = await addDoc(collection(db, "requests"), {
                     name: name,
                     email: email,
                     timestamp: new Date()
                 });
-                messageDiv.textContent = `Success! Document ID: ${docRef.id}`;
+                messageDiv.textContent = `Данные отправлены! ID: ${docRef.id}`;
                 messageDiv.className = 'success';
                 form.reset();
             } catch (error) {
-                console.error("Error:", error);
-                messageDiv.textContent = `Error: ${error.message}`;
+                console.error("Ошибка:", error);
+                messageDiv.textContent = `Ошибка: ${error.message}`;
                 messageDiv.className = 'error';
             }
         });
